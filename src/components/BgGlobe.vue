@@ -1,13 +1,47 @@
+
 <template>
-    <v-app :theme="theme" :bgCurrentAnim="bgCurrentAnim">
+    <v-app
+    :theme="theme"
+    :bgCurrentAnim="bgCurrentAnim"
+    :bgCurrentColorOne="bgCurrentColorOne"
+    :bgCurrentColorTwo="bgCurrentColorTwo"
+    :bgBackgroundColor="bgBackgroundColor">
       <v-app-bar app>
+        <v-col>
+          <v-row>
+            Change Background Animation
+          </v-row>
+        </v-col>
+        <v-col>
+          <v-row>
         <BgDropdown @setBgAnim="changeBgAnim" :BgItems="BgItems" :bgCurrentAnim="bgCurrentAnim"/>
-        <v-spacer></v-spacer>
-        
+        </v-row>
+      </v-col>
+        <v-col >
+        <BgColorPicker
+          @setBgColor="changeBgColor"
+          number=1
+        />
+        </v-col>
+        <v-col >
+        <BgColorPicker
+          @setBgColor="changeBgColor"
+          number=2
+        />
+        </v-col>
+        <v-col >
+        <BgColorPicker
+          @setBgColor="changeBgColor"
+          number=3
+        />
+        </v-col>
+      
+     <v-col>
         <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
           @click="onClick"
         >Toggle Theme</v-btn>
+      </v-col>
       </v-app-bar>
       <v-main class="vanta-bg-container">
         <v-container>
@@ -17,6 +51,12 @@
                     {{ item }}
                 </li>
             </ul>
+            <h1>Colors</h1>
+            <ul>
+                <li>Color 1: {{ bgCurrentColorOne }}</li>
+                <li>Color 2: {{ bgCurrentColorTwo }}</li>
+                <li>Background Color: {{ bgBackgroundColor }}</li>
+            </ul>
         </v-container>
       </v-main>
     </v-app>
@@ -25,13 +65,39 @@
   <script allowJS="true" setup>
     import { ref } from 'vue'
     import BgDropdown from './BgDropdown.vue';
+    import BgColorPicker from './BgColorPicker.vue';
 
     const theme = ref('dark');
 
     var bgCurrentAnim = ref({title: 'Globe', value: 'gl'});
 
+    var bgCurrentColorOne = ref('#34c0eb');
+    var bgCurrentColorTwo = ref('#8246c7');
+    var bgBackgroundColor = ref('#311885');
+
     function onClick () {
       theme.value = theme.value === 'light' ? 'dark' : 'light'
+    }
+
+    function changeBgColor(msg) {
+
+        msg = msg.target ? msg.target : msg;
+        console.log('changeBgColor', msg);
+        if (msg.number == "1") {
+            bgCurrentColorOne.value = msg.color;
+        } else if (msg.number == "2") {
+            bgCurrentColorTwo.value = msg.color;
+        } else if (msg.number == "3") {
+            bgBackgroundColor.value = msg.color;
+        }
+
+
+        
+        window.VANTA.current.setOptions({
+          color: bgCurrentColorOne.value,
+          color2: bgCurrentColorTwo.value,
+          backgroundColor: bgBackgroundColor.value
+        });
     }
 
     function changeBgAnim(item) {
@@ -78,8 +144,9 @@
           minWidth: 200.00,
           scale: 1.00,
           scaleMobile: 1.00,
-          color: 0x0afff,
-          backgroundColor: 0x0fff,
+          color: bgCurrentColorOne.value,
+          backgroundColor: bgBackgroundColor.value,
+          color2: bgCurrentColorTwo.value,
           points: 7.00,
           maxDistance: 23.00,
           spacing: spacing,
@@ -102,7 +169,8 @@ export default {
     props: {
     },
     components: {
-        BgDropdown
+        BgDropdown,
+        BgColorPicker
     },
     data() {
         return {
@@ -112,7 +180,14 @@ export default {
                 {title: 'Network', value: 'nt'}
             ],
             bgCurrentAnim: {title: 'Globe', value: 'gl'},
-        }
+            bgCurrentColorOne: '#0afff',
+            bgCurrentColorTwo: '#0fff',
+            bgBackgroundColor: '#0acff',
+            numbers : {
+              type: Array,
+              default: () => [1, 2, 3]
+            }
+      }
     },
     created() {
         console.log('App created');
@@ -137,12 +212,14 @@ export default {
                 minWidth: 200.00,
                 scale: 1.00,
                 scaleMobile: 1.00,
-                color: 0x0afff,
-                backgroundColor: 0x0fff,
+                color: "#34c0eb",
+                backgroundColor: "#311885",
+                color2: "#8246c7",
                 points: 7.00,
                 maxDistance: 23.00,
                 spacing: 20.00
             });
+
         }
     },
     beforeUnmount() {
