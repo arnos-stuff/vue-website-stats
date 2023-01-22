@@ -87,7 +87,7 @@
               >
             <ul>
                 <li v-for="item in BgItems" :key="item">
-                    Background anim: {{ item.title }} (code: {{ item.code }})
+                    Background anim: {{ item.title }} (code: {{ item.value }})
                 </li>
             </ul>
           </v-text-field>
