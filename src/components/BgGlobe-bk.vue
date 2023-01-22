@@ -5,13 +5,15 @@
     :bgCurrentAnim="bgCurrentAnim"
     :bgCurrentColorOne="bgCurrentColorOne"
     :bgCurrentColorTwo="bgCurrentColorTwo"
-    :bgBackgroundColor="bgBackgroundColor">
-      <v-app-bar app>
+    :bgBackgroundColor="bgBackgroundColor"
+    :drawer="drawer">
+      <v-app-bar app hide-on-scroll>
         <v-col>
-          <v-row>
-            Change Background Animation
-          </v-row>
-        </v-col>
+        <v-btn
+          :prepend-icon="theme === 'light' ? 'mdi-palette' : 'mdi-palette-outline'"
+          @click="sendToggleDrawer"
+        >Customize Background</v-btn>
+      </v-col>
         <v-col>
           <v-row>
         <BgDropdown @setBgAnim="changeBgAnim" :BgItems="BgItems" :bgCurrentAnim="bgCurrentAnim"/>
@@ -43,6 +45,11 @@
         >Toggle Theme</v-btn>
       </v-col>
       </v-app-bar>
+
+      <!-- end of app bar  -->
+      
+
+
       <v-main class="vanta-bg-container">
         <v-container>
             <h1>Background Animation: {{ bgCurrentAnim.title }}</h1>
@@ -64,8 +71,12 @@
   
   <script allowJS="true" setup>
     import { ref } from 'vue'
+    import { defineEmits } from 'vue';
     import BgDropdown from './BgDropdown.vue';
     import BgColorPicker from './BgColorPicker.vue';
+
+
+    const emit = defineEmits(['toggleBgDrawer']);
 
     const theme = ref('dark');
 
@@ -75,8 +86,15 @@
     var bgCurrentColorTwo = ref('#8246c7');
     var bgBackgroundColor = ref('#311885');
 
+    var drawer = ref(false);
+
     function onClick () {
       theme.value = theme.value === 'light' ? 'dark' : 'light'
+    }
+
+    function sendToggleDrawer () {
+      drawer.value = !drawer.value;
+      emit('toggleBgDrawer', drawer.value);
     }
 
     function changeBgColor(msg) {
@@ -85,19 +103,30 @@
         console.log('changeBgColor', msg);
         if (msg.number == "1") {
             bgCurrentColorOne.value = msg.color;
+            if (bgCurrentAnim.value.value == 'tk') {
+              bgCurrentColorTwo.value = bgCurrentColorOne.value;
+            }
         } else if (msg.number == "2") {
             bgCurrentColorTwo.value = msg.color;
+            if (bgCurrentAnim.value.value == 'tk') {
+                bgCurrentColorTwo.value = bgCurrentColorOne.value;
+            }
         } else if (msg.number == "3") {
             bgBackgroundColor.value = msg.color;
         }
-
-
         
-        window.VANTA.current.setOptions({
+
+        if (bgCurrentAnim.value.value == 'tk') {
+          RenewBgAnim(bgCurrentAnim.value);
+        }
+        else {
+          window.VANTA.current.setOptions({
           color: bgCurrentColorOne.value,
           color2: bgCurrentColorTwo.value,
           backgroundColor: bgBackgroundColor.value
-        });
+          });
+        }
+        window.vantaEffect = window.VANTA.current;
     }
 
     function changeBgAnim(item) {
@@ -186,7 +215,7 @@ export default {
             numbers : {
               type: Array,
               default: () => [1, 2, 3]
-            }
+            },
       }
     },
     created() {
@@ -226,44 +255,7 @@ export default {
         if (this.vantaEffect) this.vantaEffect.destroy()
     },
     methods: {
-      RenewBgAnim(item) {
-          console.log('RenewBgAnim Watcher:', item);
-          var code = item.value ? item.value : item;
-
-          let ANIM = null;
-
-          switch (code) {
-              case 'gl':
-                  ANIM = GLOBE;
-                  break;
-              case 'nt':
-                  ANIM = NET;
-                  break;
-              case 'tk':
-                  ANIM = TRUNK;
-                  break;
-              default:
-                  ANIM = GLOBE;
-                  break;
-          }
-
-          this.VANTA.current = ANIM.default({
-          // this.$refs.bgref
-          el: ".vanta-bg-container",
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.00,
-          minWidth: 200.00,
-          scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0x0afff,
-          backgroundColor: 0x0fff,
-          points: 7.00,
-          maxDistance: 23.00,
-          spacing: 20.00
-      });
-      }
+      
   },
 }
     

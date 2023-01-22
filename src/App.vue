@@ -1,16 +1,16 @@
 <template>
   <Suspense>
-      <BgGlobe />
+      <BgAnimMainPage />
   </Suspense>
 </template>
 
 <script>
-import BgGlobe from './components/BgGlobe.vue';
+import BgAnimMainPage from './components/BgAnimMainPage.vue';
 
 export default {
   name: 'App',
   components: {
-    BgGlobe
+    BgAnimMainPage
   },
   props: {
     },
