@@ -9,29 +9,33 @@
     :drawer="drawer"
     >
     <v-layout>
-      <v-app-bar app>
-    
-        <v-col>
+      <v-app-bar app :width="width">
+        <v-col align-self="center" :width="0.2*width" :max-width="width * 0.3">
         <BgDropdown @setBgAnim="changeBgAnim" :BgItems="BgItems" :bgCurrentAnim="bgCurrentAnim"/>
-      </v-col>
-      <v-col>
+        </v-col>
+        <v-col align-self="center" :width="0.2*width">
         <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-palette' : 'mdi-palette-outline'"
           @click.stop="drawer = !drawer"
-        >Customize Background</v-btn>
-      </v-col>
-     <v-col>
+        > {{ mobile ? 'Pick BG' : 'Customize Background' }}</v-btn>
+          
+          </v-col>
+          <v-col align-self="center" :width="0.2*width" :max-width="width * 0.3">
         <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
           @click.stop="onClick"
-        >Toggle Theme</v-btn>
+          :max-width="width * 0.3"
+          width="10vw"
+          :min-width="width * 0.1"
+
+        >{{ mobile ? 'Theme' : 'Pick a Color Theme' }}</v-btn>
       </v-col>
       </v-app-bar>
+
       <v-navigation-drawer
         v-model:model-value="drawer"
         rail
-        :rail-width="hover ? '5vw' : '1vw'"
-        :width="hover ? '5vw' : '1vw'"
+        :rail-width="mobile ? width * 0.4 : width * 0.2"
         >
 
         <BgColorPickDrawer
@@ -45,16 +49,18 @@
           @update:titleBackground.stop="titleBackground = $event.target.value"
         ></BgColorPickDrawer>
       </v-navigation-drawer>
-     
       <!-- end of app bar  -->
       
 
-
+    
       <v-main class="vanta-bg-container">
+        
         <v-container>
+          <v-responsive width="100vw" height="eval(0.098 * 100vh)">
           <v-col></v-col>
           <v-col></v-col>
           <div class="text-center">
+            <v-responsive max-width="eval(0.7 * 100vw)" width="eval(0.5 * 100vw)">
           <v-card
             class="text-center"
             width="fit-content"
@@ -132,7 +138,9 @@
            
    
           </v-card>
+        </v-responsive>
         </div>
+      </v-responsive>
         </v-container>
       </v-main>
     </v-layout>
@@ -143,6 +151,9 @@
     import { ref, defineProps } from 'vue'
     import BgDropdown from './BgDropdown.vue';
     import BgColorPickDrawer from './BgColorPickDrawer.vue';
+    import { useDisplay } from 'vuetify'
+
+    const { width, mobile } = useDisplay()
     
     const props = defineProps(
       {

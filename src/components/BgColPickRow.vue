@@ -6,13 +6,18 @@
       prepend-icon="mdi-brush"
       :color="number === 3 ? 'primary' : 'secondary'"
       @click.stop="dialog = true"
+      :height="mobile ? 0.2 * height : 'fit-content'"
     >
-      {{ number === 3 ? 'Set Background Color' : ' Animation Color #' + number }}
+      {{ number === 3 ? (mobile ? 'BG' : 'Set Background Color') : (mobile ? 'Anim' : 'Set Animation Color #' + number) }}
+      <br v-if="mobile">
+      {{ number === 3 ? (mobile ? 'Color' : '') : (mobile ? 'Color': '') }}
+      <br v-if="mobile">
+      {{ number === 3 ? (mobile ? '' : '') : (mobile ? ('#' + number) : '') }}
       <v-dialog
         v-model="dialog"
         v-bind:eager="true"
-        max-width="40%"
-        width="fit-content"
+        :max-width="mobile ? width : 'fit-content'"
+        :width="mobile ? 0.95*width : 'fit-content'"
         ref = "dialogRef"
       >
       <v-card :title="cardTitle">
@@ -46,8 +51,10 @@
 
 <script allowJS="true" setup>
 import { defineEmits, defineProps, defineExpose, ref} from 'vue';
+import { useDisplay } from 'vuetify'
 const emit = defineEmits(['setBgColor', 'update:bgColor']);
 
+const { mobile, width, height } = useDisplay()
 const props = defineProps({
     number: {
         type: Number,

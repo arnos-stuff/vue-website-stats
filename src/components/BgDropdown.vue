@@ -1,5 +1,7 @@
 <script setup>
 import { defineEmits } from 'vue'
+import { useDisplay } from 'vuetify'
+const { mobile, width } = useDisplay()
 
 const emit = defineEmits(['setBgAnim'])
 
@@ -13,14 +15,16 @@ function emitBgAnimEvent(item) {
     <v-col>
     <v-btn
       color="primary"
+      :width="0.2*width"
+      :max-width="0.3 * width"
+      :prepend-icon="hover ? 'mdi-animation' : 'mdi-animation-outline'"
     >
-      Pick Background Animation
+      {{ mobile ? 'Anim' : 'Pick Background Animation' }}
 
       <v-dialog
         v-model="dialog"
         activator="parent"
-        max-width="40%"
-        width="fit-content"
+        :max-width="mobile ? 0.9*width : 'fit-content'"
       >
       <v-card title="Set background animation to">
           <v-card-actions>
