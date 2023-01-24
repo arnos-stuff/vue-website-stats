@@ -142,6 +142,15 @@
         </div>
       </v-responsive>
         </v-container>
+        <ArnoLogo
+          v-model:size="size"
+          v-model:mobile="mobile"
+          v-model:color-start="bgCurrentColorOne"
+          v-model:color-end="bgCurrentColorTwo"
+          text-content="Ts"
+          @update:size.stop="size = $event.target.value"
+          id="arno-logo-id"
+          ></ArnoLogo>
       </v-main>
     </v-layout>
     </v-app>
@@ -151,6 +160,7 @@
     import { ref, defineProps } from 'vue'
     import BgDropdown from './BgDropdown.vue';
     import BgColorPickDrawer from './BgColorPickDrawer.vue';
+    import ArnoLogo from './icons/ArnoLogo.vue';
     import { useDisplay } from 'vuetify'
 
     const { width, mobile } = useDisplay()
@@ -292,7 +302,8 @@ export default {
     name: 'BgAnimMainPage',
     components: {
         BgDropdown,
-        BgColorPickDrawer
+        BgColorPickDrawer,
+        ArnoLogo
     },
     data() {
         return {
@@ -312,6 +323,10 @@ export default {
             hover: false,
             navHovered: false,
             drawer: false,
+            colorStart: '#0afff',
+            colorEnd: '#0fff',
+            colorMiddle: '#0acff',
+            size: 50,
       }
     },
     emits: ['setDrawer', 'setBgAnim', 'setBgColor'],
@@ -336,7 +351,6 @@ export default {
                 maxDistance: 23.00,
                 spacing: 20.00
             });
-
         }
     },
 }
